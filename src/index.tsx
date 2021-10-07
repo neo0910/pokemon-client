@@ -1,17 +1,30 @@
-import React from 'react';
+import React, {createContext} from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+
+import {AuthStore, PokemonsStore, TypesStore} from './store/store';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import GlobalStyle from './ui/globalStyle';
+
+type StoreT = {
+    authStore: AuthStore;
+    pokemonStore: PokemonsStore;
+    typesStore: TypesStore;
+};
+
+const stores = {
+    authStore: new AuthStore(),
+    pokemonStore: new PokemonsStore(),
+    typesStore: new TypesStore(),
+};
+
+export const Context = createContext<StoreT>(stores);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Context.Provider value={stores}>
+            <GlobalStyle />
+            <App />
+        </Context.Provider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
