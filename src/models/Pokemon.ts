@@ -1,20 +1,20 @@
 import {TypeT} from './Type';
 
 export type PokemonT = {
-    description: string;
-    height: number;
-    id: number;
-    name: string;
-    number: number;
-    type: TypeT[];
-    weight: number;
+    readonly description: string;
+    readonly height: number;
+    readonly id: number;
+    readonly name: string;
+    readonly number: number;
+    readonly type: TypeT[];
+    readonly weight: number;
 };
 
 export type PokemonDto = {
-    description: string;
-    height: number;
-    name: string;
-    number: number;
-    type_id: number | string;
-    weight: number;
+    readonly description: string;
+    readonly height: number;
+    readonly name: string;
+    readonly number: number;
+    readonly type_id: number | string;
+    readonly weight: number;
 };

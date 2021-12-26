@@ -1,7 +1,7 @@
 export type UserT = {
-    email: string;
-    firstName?: string;
-    id?: string;
-    isActivated: boolean;
-    lastName?: string;
+    readonly email: string;
+    readonly firstName?: string;
+    readonly id?: string;
+    readonly isActivated: boolean;
+    readonly lastName?: string;
 };

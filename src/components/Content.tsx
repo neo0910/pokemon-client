@@ -1,10 +1,11 @@
-import {observer} from 'mobx-react-lite';
-import React, {FC, useContext, useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import styled from 'styled-components';
 
 import {Button} from '../ui/StyledButton';
-import {Context} from '..';
+import {fetchPokemons} from '../store/pokemonSlice';
 import {Flex} from '../ui/StyledFlex';
+import {logout} from '../store/authSlice';
+import {useTypedDispatch, useTypedSelector} from '../hooks';
 import AddPokemon from './AddPokemon';
 import PokemonCard from './PokemonCard';
 
@@ -17,23 +18,25 @@ const Body = styled(Flex)`
     padding: 0 16px;
 `;
 
-const Content: FC<any> = () => {
-    const {authStore, pokemonStore} = useContext(Context);
+const Content: FC = () => {
+    const dispatch = useTypedDispatch();
+
+    const pokemons = useTypedSelector((s) => s.pokemons.pokemons);
 
     useEffect(() => {
-        pokemonStore.getPokemons();
-    }, [pokemonStore]);
+        dispatch(fetchPokemons());
+    }, [dispatch]);
 
     return (
         <Flex column width="100%">
             <Header align="center" gap="0" justify="space-between" width="100%">
                 <AddPokemon />
-                <Button primary onClick={() => authStore.logout()}>
+                <Button primary onClick={() => dispatch(logout())}>
                     Logout
                 </Button>
             </Header>
             <Body>
-                {pokemonStore.pokemons.map((p) => (
+                {pokemons.map((p) => (
                     <PokemonCard key={p.id} pokemon={p} />
                 ))}
             </Body>
@@ -41,4 +44,4 @@ const Content: FC<any> = () => {
     );
 };
 
-export default observer(Content);
+export default Content;

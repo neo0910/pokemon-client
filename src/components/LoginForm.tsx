@@ -1,12 +1,13 @@
 import {Formik, FormikHelpers, Form} from 'formik';
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 
 import {Button} from '../ui/StyledButton';
-import {Context} from '..';
 import {Flex} from '../ui/StyledFlex';
 import {FormikInput} from '../ui/StyledInput';
+import {login, registration} from '../store/authSlice';
+import {useTypedDispatch} from '../hooks';
 
 const ComponentWrapper = styled(Flex)`
     align-items: center;
@@ -21,14 +22,15 @@ const FormInner = styled(Flex)`
 type LoginFormT = {email: string; password: string};
 
 const LoginForm = () => {
-    const {authStore} = useContext(Context);
+    const dispatch = useTypedDispatch();
+
     const [loginForm, setLoginForm] = useState(true);
 
     const submit = async (values: LoginFormT, {setSubmitting}: FormikHelpers<LoginFormT>) => {
         if (loginForm) {
-            await authStore.login(values.email, values.password);
+            await dispatch(login(values));
         } else {
-            await authStore.registration(values.email, values.password);
+            await dispatch(registration(values));
         }
 
         setSubmitting(false);

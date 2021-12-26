@@ -1,28 +1,30 @@
-import {observer} from 'mobx-react-lite';
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 
-import {Context} from '.';
+import {checkAuth} from './store/authSlice';
 import {Flex} from './ui/StyledFlex';
+import {useTypedDispatch, useTypedSelector} from './hooks';
 import Content from './components/Content';
 import LoginForm from './components/LoginForm';
 
 function App() {
-    const {authStore} = useContext(Context);
+    const dispatch = useTypedDispatch();
+
+    const {user, isAuth} = useTypedSelector((s) => ({user: s.auth.user, isAuth: s.auth.isAuth}));
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            authStore.checkAuth();
+            dispatch(checkAuth());
         }
-    }, [authStore]);
+    }, [dispatch]);
 
     return (
         <Flex column align="center" gap="42px">
-            {typeof authStore.user.isActivated !== 'undefined' && !authStore.user.isActivated && (
+            {typeof user.isActivated !== 'undefined' && !user.isActivated && (
                 <h2 style={{textAlign: 'center'}}>User not activated</h2>
             )}
-            {authStore.isAuth ? <Content /> : <LoginForm />}
+            {isAuth ? <Content /> : <LoginForm />}
         </Flex>
     );
 }
 
-export default observer(App);
+export default App;

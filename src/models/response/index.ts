@@ -1,7 +1,7 @@
 import {UserT} from '../User';
 
 export type AuthResponseT = {
-    accessToken: string;
-    refreshToken: string;
-    user: UserT;
+    readonly accessToken: string;
+    readonly refreshToken: string;
+    readonly user: UserT;
 };

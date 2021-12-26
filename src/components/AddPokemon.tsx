@@ -1,26 +1,29 @@
 import {Formik, Form, Field} from 'formik';
-import React, {FC, memo, useCallback, useContext, useEffect, useState} from 'react';
+import React, {FC, memo, useEffect, useState} from 'react';
 import * as Yup from 'yup';
 
 import {Button} from '../ui/StyledButton';
-import {Context} from '..';
+import {createPokemon} from '../store/pokemonSlice';
+import {fetchTypes} from '../store/typesSlice';
 import {Flex} from '../ui/StyledFlex';
 import {FormikInput} from '../ui/StyledInput';
 import {PokemonDto} from '../models/Pokemon';
+import {useTypedDispatch, useTypedSelector} from '../hooks';
 import Modal from './Modal';
 
 const AddPokemon: FC = () => {
+    const dispatch = useTypedDispatch();
+
+    const types = useTypedSelector((s) => s.types.types);
+
     const [visible, setVisible] = useState(false);
-    const setVisibleCallback = useCallback(setVisible, [setVisible]);
-    const {typesStore} = useContext(Context);
-    const {pokemonStore} = useContext(Context);
 
     useEffect(() => {
-        typesStore.getTypes();
-    }, [typesStore]);
+        dispatch(fetchTypes());
+    }, [dispatch]);
 
     const submit = async (payload: PokemonDto) => {
-        await pokemonStore.createPokemon(payload);
+        await dispatch(createPokemon(payload));
         setVisible(false);
     };
 
@@ -29,7 +32,7 @@ const AddPokemon: FC = () => {
             <Button outline onClick={() => setVisible(!visible)}>
                 Add pokemon
             </Button>
-            <Modal options={{title: 'Add Pokemon'}} setVisible={setVisibleCallback} visible={visible}>
+            <Modal options={{title: 'Add Pokemon'}} setVisible={setVisible} visible={visible}>
                 <Formik
                     initialValues={
                         {
@@ -37,14 +40,14 @@ const AddPokemon: FC = () => {
                             height: 0,
                             name: '',
                             number: 0,
-                            type_id: typesStore.types[0]?.id.toString(),
+                            type_id: types[0]?.id.toString(),
                             weight: 0,
                         } as PokemonDto
                     }
                     onSubmit={submit}
                     validationSchema={Yup.object({
                         name: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
-                        description: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+                        description: Yup.string().max(50, 'Must be 50 characters or less').required('Required'),
                         number: Yup.number().min(1, 'Min value is 1').max(999, 'Too much').required('Number required'),
                         height: Yup.number()
                             .min(0.01, 'Min value is 0.01')
@@ -74,7 +77,7 @@ const AddPokemon: FC = () => {
                                     Pokemon type
                                 </label>
                                 <Field as="select" name="type_id" style={{height: 32, width: '100%'}}>
-                                    {typesStore.types.map((t) => (
+                                    {types.map((t) => (
                                         <option key={t.id} value={t.id}>
                                             {t.name}
                                         </option>
