@@ -1,10 +1,24 @@
-import {AxiosResponse} from 'axios';
+import {createApi} from '@reduxjs/toolkit/query/react';
 
-import {TypeT} from '../models/Type';
-import api from '../api';
+import {baseQueryWithReauth} from '../api';
+import {TypeDto, TypeT} from '../models/Type';
 
-export default class TypeService {
-    static async fetchTypes(): Promise<AxiosResponse<TypeT[]>> {
-        return api.get<TypeT[]>('/types');
-    }
-}
+export const typeApi = createApi({
+    reducerPath: 'typeApi',
+    baseQuery: baseQueryWithReauth,
+    tagTypes: ['Type'],
+    endpoints: (builder) => ({
+        fetchTypes: builder.query<TypeT[], void>({
+            query: () => '/types',
+            providesTags: ['Type'],
+        }),
+        createType: builder.mutation<TypeT, TypeDto>({
+            query: (type) => ({
+                url: '/types',
+                method: 'POST',
+                body: type,
+            }),
+            invalidatesTags: ['Type'],
+        }),
+    }),
+});

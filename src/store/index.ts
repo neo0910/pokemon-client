@@ -1,11 +1,19 @@
 import {configureStore} from '@reduxjs/toolkit';
 
+import {pokemonApi} from '../services/PokemonService';
+import {userApi} from '../services/UserService';
+import {typeApi} from '../services/TypeService';
 import auth from './authSlice';
-import pokemons from './pokemonSlice';
-import types from './typesSlice';
 
 export const store = configureStore({
-    reducer: {auth, pokemons, types},
+    reducer: {
+        auth,
+        [pokemonApi.reducerPath]: pokemonApi.reducer,
+        [userApi.reducerPath]: userApi.reducer,
+        [typeApi.reducerPath]: typeApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(pokemonApi.middleware, userApi.middleware, typeApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

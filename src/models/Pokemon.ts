@@ -15,6 +15,6 @@ export type PokemonDto = {
     readonly height: number;
     readonly name: string;
     readonly number: number;
-    readonly type_id: number | string;
+    readonly type_id: Array<number | string>;
     readonly weight: number;
 };

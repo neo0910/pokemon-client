@@ -2,10 +2,11 @@ import React, {FC} from 'react';
 import styled, {css} from 'styled-components';
 
 type ButtonProps = {
-    isLoading?: boolean;
-    outline?: boolean;
-    primary?: boolean;
-    width?: string;
+    readonly isLoading?: boolean;
+    readonly outline?: boolean;
+    readonly primary?: boolean;
+    readonly visible?: boolean;
+    readonly width?: string;
 };
 
 const StyledButton = styled.button<ButtonProps>`
@@ -14,7 +15,6 @@ const StyledButton = styled.button<ButtonProps>`
     border: none;
     box-sizing: border-box;
     cursor: pointer;
-    display: flex;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 600;
@@ -24,6 +24,7 @@ const StyledButton = styled.button<ButtonProps>`
     position: relative;
     transition: all 0.25s ease;
 
+    display: ${({visible}) => (visible === false ? 'none' : 'flex')};
     width: ${({width}) => width};
 
     ${({primary}) =>

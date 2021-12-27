@@ -1,14 +1,24 @@
-import {AxiosResponse} from 'axios';
+import {createApi} from '@reduxjs/toolkit/query/react';
 
+import {baseQueryWithReauth} from '../api';
 import {PokemonDto, PokemonT} from '../models/Pokemon';
-import api from '../api';
 
-export default class PokemonService {
-    static async fetchPokemons(): Promise<AxiosResponse<PokemonT[]>> {
-        return api.get<PokemonT[]>('/pokemons');
-    }
-
-    static async createPokemon(pokemon: PokemonDto): Promise<AxiosResponse<PokemonT>> {
-        return api.post<PokemonT>('/pokemons', {...pokemon, type_id: [parseInt(pokemon.type_id as string, 10)]});
-    }
-}
+export const pokemonApi = createApi({
+    reducerPath: 'pokemonApi',
+    baseQuery: baseQueryWithReauth,
+    tagTypes: ['Pokemon'],
+    endpoints: (builder) => ({
+        fetchPokemons: builder.query<PokemonT[], void>({
+            query: () => '/pokemons',
+            providesTags: ['Pokemon'],
+        }),
+        createPokemon: builder.mutation<PokemonT, PokemonDto>({
+            query: (pokemon) => ({
+                url: '/pokemons',
+                method: 'POST',
+                body: {...pokemon, type_id: pokemon.type_id.map((type) => parseInt(type as string, 10))},
+            }),
+            invalidatesTags: ['Pokemon'],
+        }),
+    }),
+});

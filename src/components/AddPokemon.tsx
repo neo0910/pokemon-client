@@ -1,29 +1,23 @@
-import {Formik, Form, Field} from 'formik';
-import React, {FC, memo, useEffect, useState} from 'react';
+import {Formik, Form, Field, FieldArray} from 'formik';
+import React, {FC, memo, useState} from 'react';
 import * as Yup from 'yup';
 
 import {Button} from '../ui/StyledButton';
-import {createPokemon} from '../store/pokemonSlice';
-import {fetchTypes} from '../store/typesSlice';
 import {Flex} from '../ui/StyledFlex';
 import {FormikInput} from '../ui/StyledInput';
+import {pokemonApi} from '../services/PokemonService';
 import {PokemonDto} from '../models/Pokemon';
-import {useTypedDispatch, useTypedSelector} from '../hooks';
+import {typeApi} from '../services/TypeService';
 import Modal from './Modal';
 
 const AddPokemon: FC = () => {
-    const dispatch = useTypedDispatch();
-
-    const types = useTypedSelector((s) => s.types.types);
+    const {data: types} = typeApi.useFetchTypesQuery();
+    const [createPokemon] = pokemonApi.useCreatePokemonMutation();
 
     const [visible, setVisible] = useState(false);
 
-    useEffect(() => {
-        dispatch(fetchTypes());
-    }, [dispatch]);
-
     const submit = async (payload: PokemonDto) => {
-        await dispatch(createPokemon(payload));
+        await createPokemon(payload);
         setVisible(false);
     };
 
@@ -40,14 +34,14 @@ const AddPokemon: FC = () => {
                             height: 0,
                             name: '',
                             number: 0,
-                            type_id: types[0]?.id.toString(),
+                            type_id: types ? [types[0]?.id.toString()] : [],
                             weight: 0,
                         } as PokemonDto
                     }
                     onSubmit={submit}
                     validationSchema={Yup.object({
                         name: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
-                        description: Yup.string().max(50, 'Must be 50 characters or less').required('Required'),
+                        description: Yup.string().max(200, 'Must be 200 characters or less').required('Required'),
                         number: Yup.number().min(1, 'Min value is 1').max(999, 'Too much').required('Number required'),
                         height: Yup.number()
                             .min(0.01, 'Min value is 0.01')
@@ -59,42 +53,81 @@ const AddPokemon: FC = () => {
                             .required('Number required'),
                     })}
                 >
-                    <Form>
-                        <Flex column gap="16px">
-                            <FormikInput type="text" name="name" placeholder="Onix" label="Pokemon name" />
-                            <FormikInput
-                                label="Pokemon description"
-                                name="description"
-                                placeholder="Rock pokemon"
-                                type="text"
-                            />
-                            <FormikInput type="number" name="number" placeholder="95" label="Pokemon number" />
-                            <FormikInput type="number" name="height" placeholder="8.8" label="Pokemon height (m)" />
-                            <FormikInput label="Pokemon weight (kg)" name="weight" placeholder="210" type="number" />
+                    {({values}) => (
+                        <Form>
+                            <Flex column gap="16px">
+                                <FormikInput type="text" name="name" placeholder="Onix" label="Pokemon name" />
+                                <FormikInput
+                                    label="Pokemon description"
+                                    name="description"
+                                    placeholder="Rock pokemon"
+                                    type="text"
+                                />
+                                <FormikInput type="number" name="number" placeholder="95" label="Pokemon number" />
+                                <FormikInput type="number" name="height" placeholder="8.8" label="Pokemon height (m)" />
+                                <FormikInput
+                                    label="Pokemon weight (kg)"
+                                    name="weight"
+                                    placeholder="210"
+                                    type="number"
+                                />
 
-                            <Flex column width="100%">
-                                <label htmlFor="type" style={{fontWeight: 600}}>
-                                    Pokemon type
-                                </label>
-                                <Field as="select" name="type_id" style={{height: 32, width: '100%'}}>
-                                    {types.map((t) => (
-                                        <option key={t.id} value={t.id}>
-                                            {t.name}
-                                        </option>
-                                    ))}
-                                </Field>
-                            </Flex>
+                                <FieldArray name="type_id">
+                                    {({insert, remove, push}) => (
+                                        <Flex column width="100%">
+                                            {values.type_id.map((type, i) => (
+                                                <Flex key={i} column width="100%">
+                                                    {i === 0 && (
+                                                        <label htmlFor="type" style={{fontWeight: 600}}>
+                                                            Pokemon type
+                                                        </label>
+                                                    )}
+                                                    <Flex width="100%">
+                                                        <Field
+                                                            as="select"
+                                                            name={`type_id[${i}]`}
+                                                            style={{height: 32, width: '100%', flexGrow: 1}}
+                                                        >
+                                                            {(types || []).map((t) => (
+                                                                <option key={t.id} value={t.id}>
+                                                                    {t.name}
+                                                                </option>
+                                                            ))}
+                                                        </Field>
+                                                        <Button
+                                                            outline
+                                                            onClick={() => remove(i)}
+                                                            type="button"
+                                                            visible={values.type_id.length > 1}
+                                                        >
+                                                            X
+                                                        </Button>
+                                                    </Flex>
+                                                </Flex>
+                                            ))}
+                                            <Button
+                                                outline
+                                                onClick={() => types && push(types[0].id)}
+                                                type="button"
+                                                visible={types && types.length > 1}
+                                            >
+                                                Add Type
+                                            </Button>
+                                        </Flex>
+                                    )}
+                                </FieldArray>
 
-                            <Flex gap="0" width="100%">
-                                <Button outline type="button" onClick={() => setVisible(false)}>
-                                    Cancel
-                                </Button>
-                                <Button primary type="submit">
-                                    Save
-                                </Button>
+                                <Flex gap="0" width="100%">
+                                    <Button outline type="button" onClick={() => setVisible(false)}>
+                                        Cancel
+                                    </Button>
+                                    <Button primary type="submit">
+                                        Save
+                                    </Button>
+                                </Flex>
                             </Flex>
-                        </Flex>
-                    </Form>
+                        </Form>
+                    )}
                 </Formik>
             </Modal>
         </>

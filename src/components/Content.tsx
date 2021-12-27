@@ -1,11 +1,11 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC} from 'react';
 import styled from 'styled-components';
 
 import {Button} from '../ui/StyledButton';
-import {fetchPokemons} from '../store/pokemonSlice';
 import {Flex} from '../ui/StyledFlex';
 import {logout} from '../store/authSlice';
-import {useTypedDispatch, useTypedSelector} from '../hooks';
+import {pokemonApi} from '../services/PokemonService';
+import {useTypedDispatch} from '../hooks';
 import AddPokemon from './AddPokemon';
 import PokemonCard from './PokemonCard';
 
@@ -21,11 +21,7 @@ const Body = styled(Flex)`
 const Content: FC = () => {
     const dispatch = useTypedDispatch();
 
-    const pokemons = useTypedSelector((s) => s.pokemons.pokemons);
-
-    useEffect(() => {
-        dispatch(fetchPokemons());
-    }, [dispatch]);
+    const {data: pokemons} = pokemonApi.useFetchPokemonsQuery();
 
     return (
         <Flex column width="100%">
@@ -35,11 +31,7 @@ const Content: FC = () => {
                     Logout
                 </Button>
             </Header>
-            <Body>
-                {pokemons.map((p) => (
-                    <PokemonCard key={p.id} pokemon={p} />
-                ))}
-            </Body>
+            <Body>{pokemons && pokemons.map((p) => <PokemonCard key={p.id} pokemon={p} />)}</Body>
         </Flex>
     );
 };

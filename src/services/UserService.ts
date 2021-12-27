@@ -1,10 +1,16 @@
-import {AxiosResponse} from 'axios';
+import {createApi} from '@reduxjs/toolkit/query/react';
 
-import api from '../api';
+import {baseQueryWithReauth} from '../api';
 import {UserT} from '../models/User';
 
-export default class UserService {
-    static async fetchUsers(): Promise<AxiosResponse<UserT[]>> {
-        return api.get<UserT[]>('/users');
-    }
-}
+export const userApi = createApi({
+    reducerPath: 'userApi',
+    baseQuery: baseQueryWithReauth,
+    tagTypes: ['User'],
+    endpoints: (builder) => ({
+        fetchUsers: builder.query<UserT[], void>({
+            query: () => '/users',
+            providesTags: ['User'],
+        }),
+    }),
+});
