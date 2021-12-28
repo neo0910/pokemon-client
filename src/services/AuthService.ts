@@ -1,22 +1,65 @@
-import {AxiosResponse} from 'axios';
+import {createApi} from '@reduxjs/toolkit/query/react';
 
 import {AuthResponseT} from '../models/response';
-import api, {refreshRequest} from '../api';
+import {baseQueryWithReauth} from '../api';
+import {setIsAuth, setUser} from '../store/authSlice';
+import {UserT} from '../models/User';
 
-export default class AuthService {
-    static async login(email: string, password: string): Promise<AxiosResponse<AuthResponseT>> {
-        return api.post<AuthResponseT>('/auth/login', {email, password});
-    }
+export const authApi = createApi({
+    reducerPath: 'authApi',
+    baseQuery: baseQueryWithReauth,
+    endpoints: (builder) => ({
+        login: builder.mutation<AuthResponseT, {email: string; password: string}>({
+            query: (payload) => ({url: '/auth/login', method: 'POST', body: payload}),
+            async onCacheEntryAdded(arg, {cacheDataLoaded, dispatch, getCacheEntry}) {
+                await cacheDataLoaded;
 
-    static async registration(email: string, password: string): Promise<AxiosResponse<AuthResponseT>> {
-        return api.post<AuthResponseT>('/auth/registration', {email, password});
-    }
+                const data = getCacheEntry().data as AuthResponseT;
 
-    static async logout(): Promise<void> {
-        return api.post('/auth/logout');
-    }
+                if (data) {
+                    localStorage.setItem('token', data.accessToken);
+                    dispatch(setIsAuth(true));
+                    dispatch(setUser(data.user));
+                }
+            },
+        }),
+        registration: builder.mutation<AuthResponseT, {email: string; password: string}>({
+            query: (payload) => ({url: '/auth/registration', method: 'POST', body: payload}),
+            async onCacheEntryAdded(arg, {cacheDataLoaded, dispatch, getCacheEntry}) {
+                await cacheDataLoaded;
 
-    static async refresh(): Promise<AxiosResponse<AuthResponseT>> {
-        return refreshRequest();
-    }
-}
+                const data = getCacheEntry().data as AuthResponseT;
+
+                if (data) {
+                    localStorage.setItem('token', data.accessToken);
+                    dispatch(setIsAuth(true));
+                    dispatch(setUser(data.user));
+                }
+            },
+        }),
+        logout: builder.mutation<void, void>({
+            query: () => ({url: '/auth/logout', method: 'POST'}),
+            async onCacheEntryAdded(arg, {cacheDataLoaded, dispatch, getCacheEntry}) {
+                await cacheDataLoaded;
+
+                localStorage.removeItem('token');
+                dispatch(setIsAuth(false));
+                dispatch(setUser({} as UserT));
+            },
+        }),
+        checkAuth: builder.query<AuthResponseT, void>({
+            query: () => '/auth/refresh',
+            async onCacheEntryAdded(arg, {cacheDataLoaded, dispatch, getCacheEntry}) {
+                await cacheDataLoaded;
+
+                const data = getCacheEntry().data as AuthResponseT;
+
+                if (data) {
+                    localStorage.setItem('token', data.accessToken);
+                    dispatch(setIsAuth(true));
+                    dispatch(setUser(data.user));
+                }
+            },
+        }),
+    }),
+});

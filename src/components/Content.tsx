@@ -1,11 +1,10 @@
 import React, {FC} from 'react';
 import styled from 'styled-components';
 
+import {authApi} from '../services/AuthService';
 import {Button} from '../ui/StyledButton';
 import {Flex} from '../ui/StyledFlex';
-import {logout} from '../store/authSlice';
 import {pokemonApi} from '../services/PokemonService';
-import {useTypedDispatch} from '../hooks';
 import AddPokemon from './AddPokemon';
 import PokemonCard from './PokemonCard';
 
@@ -19,15 +18,14 @@ const Body = styled(Flex)`
 `;
 
 const Content: FC = () => {
-    const dispatch = useTypedDispatch();
-
     const {data: pokemons} = pokemonApi.useFetchPokemonsQuery();
+    const [logout] = authApi.useLogoutMutation();
 
     return (
         <Flex column width="100%">
             <Header align="center" gap="0" justify="space-between" width="100%">
                 <AddPokemon />
-                <Button primary onClick={() => dispatch(logout())}>
+                <Button primary onClick={() => logout()}>
                     Logout
                 </Button>
             </Header>

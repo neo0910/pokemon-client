@@ -3,11 +3,10 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 
+import {authApi} from '../services/AuthService';
 import {Button} from '../ui/StyledButton';
 import {Flex} from '../ui/StyledFlex';
 import {FormikInput} from '../ui/StyledInput';
-import {login, registration} from '../store/authSlice';
-import {useTypedDispatch} from '../hooks';
 
 const ComponentWrapper = styled(Flex)`
     align-items: center;
@@ -22,15 +21,16 @@ const FormInner = styled(Flex)`
 type LoginFormT = {email: string; password: string};
 
 const LoginForm = () => {
-    const dispatch = useTypedDispatch();
-
     const [loginForm, setLoginForm] = useState(true);
+
+    const [login] = authApi.useLoginMutation();
+    const [registration] = authApi.useRegistrationMutation();
 
     const submit = async (values: LoginFormT, {setSubmitting}: FormikHelpers<LoginFormT>) => {
         if (loginForm) {
-            await dispatch(login(values));
+            await login(values);
         } else {
-            await dispatch(registration(values));
+            await registration(values);
         }
 
         setSubmitting(false);

@@ -1,5 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
 
+import {authApi} from '../services/AuthService';
 import {pokemonApi} from '../services/PokemonService';
 import {userApi} from '../services/UserService';
 import {typeApi} from '../services/TypeService';
@@ -11,9 +12,15 @@ export const store = configureStore({
         [pokemonApi.reducerPath]: pokemonApi.reducer,
         [userApi.reducerPath]: userApi.reducer,
         [typeApi.reducerPath]: typeApi.reducer,
+        [authApi.reducerPath]: authApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(pokemonApi.middleware, userApi.middleware, typeApi.middleware),
+        getDefaultMiddleware().concat(
+            pokemonApi.middleware,
+            userApi.middleware,
+            typeApi.middleware,
+            authApi.middleware
+        ),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

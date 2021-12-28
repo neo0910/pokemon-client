@@ -1,44 +1,12 @@
 import {BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError} from '@reduxjs/toolkit/query/react';
-import axios from 'axios';
 
 import {AuthResponseT} from '../models/response';
-import {logout} from '../store/authSlice';
+import {UserT} from '../models/User';
+import {setIsAuth, setUser} from '../store/authSlice';
 
 export const API_URL = 'http://localhost:3005/api';
 
-export const refreshRequest = () => axios.get<AuthResponseT>(`${API_URL}/auth/refresh`, {withCredentials: true});
-
-const api = axios.create({
-    baseURL: API_URL,
-    withCredentials: true,
-});
-
-api.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
-    return config;
-});
-
-api.interceptors.response.use(
-    (config) => config,
-    async (err) => {
-        const originalRequest = err.config;
-
-        if (err.response.status === 401 && err.config && !err.config._isRetry) {
-            originalRequest._isRetry = true;
-
-            try {
-                const {data} = await refreshRequest();
-                localStorage.setItem('token', data.accessToken);
-                return api.request(originalRequest);
-            } catch (e) {
-                console.dir(e);
-            }
-        }
-
-        // case when refreshToken is dead
-        throw err;
-    }
-);
+const basePublicQuery = fetchBaseQuery({baseUrl: API_URL});
 
 const basePrivateQuery = fetchBaseQuery({
     baseUrl: API_URL,
@@ -69,13 +37,14 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
             result = await basePrivateQuery(args, api, extraOptions);
         } else {
             // case when refreshToken is dead
-            api.dispatch(logout());
+            await basePrivateQuery('/auth/logout', api, extraOptions);
+            localStorage.removeItem('token');
+            api.dispatch(setIsAuth(false));
+            api.dispatch(setUser({} as UserT));
         }
     }
 
     return result;
 };
 
-export {baseQueryWithReauth};
-
-export default api;
+export {baseQueryWithReauth, basePublicQuery};

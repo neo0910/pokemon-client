@@ -1,21 +1,20 @@
 import React, {useEffect} from 'react';
 
-import {checkAuth} from './store/authSlice';
+import {authApi} from './services/AuthService';
 import {Flex} from './ui/StyledFlex';
-import {useTypedDispatch, useTypedSelector} from './hooks';
+import {useTypedSelector} from './hooks';
 import Content from './components/Content';
 import LoginForm from './components/LoginForm';
 
 function App() {
-    const dispatch = useTypedDispatch();
-
     const {user, isAuth} = useTypedSelector((s) => ({user: s.auth.user, isAuth: s.auth.isAuth}));
+    const [trigger] = authApi.useLazyCheckAuthQuery();
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            dispatch(checkAuth());
+            trigger();
         }
-    }, [dispatch]);
+    }, [trigger]);
 
     return (
         <Flex column align="center" gap="42px">
