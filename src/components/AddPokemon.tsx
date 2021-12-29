@@ -1,6 +1,6 @@
 import {Formik, Form, Field, FieldArray} from 'formik';
-import React, {FC, memo, useState} from 'react';
 import * as Yup from 'yup';
+import React, {FC, memo, useState} from 'react';
 
 import {Button} from '../ui/StyledButton';
 import {Flex} from '../ui/StyledFlex';

@@ -6,6 +6,7 @@ import {Button} from '../ui/StyledButton';
 import {Flex} from '../ui/StyledFlex';
 import {pokemonApi} from '../services/PokemonService';
 import AddPokemon from './AddPokemon';
+import AddType from './AddType';
 import PokemonCard from './PokemonCard';
 
 const Header = styled(Flex)`
@@ -23,9 +24,10 @@ const Content: FC = () => {
 
     return (
         <Flex column width="100%">
-            <Header align="center" gap="0" justify="space-between" width="100%">
+            <Header align="center" width="100%">
                 <AddPokemon />
-                <Button primary onClick={() => logout()}>
+                <AddType />
+                <Button primary onClick={() => logout()} style={{marginLeft: 'auto'}}>
                     Logout
                 </Button>
             </Header>
