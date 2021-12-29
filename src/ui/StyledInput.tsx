@@ -46,7 +46,7 @@ const Input = (props: React.InputHTMLAttributes<HTMLInputElement> & InputProps) 
     );
 };
 
-const FormikInput: FC<Record<string, unknown>> = (props) => {
+const FormikInput: FC<React.InputHTMLAttributes<HTMLInputElement> & InputProps> = (props) => {
     const [field, meta] = useField(props as any);
 
     return (

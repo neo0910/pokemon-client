@@ -34,7 +34,7 @@ const AddType: FC = () => {
                 >
                     <Form>
                         <Flex column gap="16px">
-                            <FormikInput type="text" name="name" placeholder="Rock" label="Pokemon type" />
+                            <FormikInput type="text" name="name" placeholder="Rock" label="Pokemon type" autoFocus />
 
                             <Flex gap="0" width="100%">
                                 <Button outline type="button" onClick={() => setVisible(false)}>

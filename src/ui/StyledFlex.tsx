@@ -6,6 +6,7 @@ type FlexProps = {
     gap?: string;
     justify?: string;
     width?: string;
+    wrap?: string;
 };
 
 const Flex = styled.div<FlexProps>`
@@ -13,6 +14,7 @@ const Flex = styled.div<FlexProps>`
 
     align-items: ${({align}) => align || 'flex-start'};
     flex-direction: ${({column}) => (column ? 'column' : 'row')};
+    flex-wrap: ${({wrap}) => wrap || 'wrap'};
     justify-content: ${({justify}) => justify || 'space-between'};
     width: ${({width}) => width};
 

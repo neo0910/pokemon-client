@@ -56,7 +56,13 @@ const AddPokemon: FC = () => {
                     {({values}) => (
                         <Form>
                             <Flex column gap="16px">
-                                <FormikInput type="text" name="name" placeholder="Onix" label="Pokemon name" />
+                                <FormikInput
+                                    autoFocus
+                                    label="Pokemon name"
+                                    name="name"
+                                    placeholder="Onix"
+                                    type="text"
+                                />
                                 <FormikInput
                                     label="Pokemon description"
                                     name="description"

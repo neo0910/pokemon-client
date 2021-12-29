@@ -13,10 +13,14 @@ const PokemonCardWrapper = styled.div`
 
     figure {
         margin: 16px;
+        padding-top: 200px;
+        position: relative;
         width: 200px;
     }
 
     img {
+        position: absolute;
+        top: 0;
         width: 100%;
     }
 
