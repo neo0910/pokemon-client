@@ -5,15 +5,15 @@ type FlexProps = {
     column?: boolean;
     gap?: string;
     justify?: string;
+    visible?: boolean;
     width?: string;
     wrap?: string;
 };
 
 const Flex = styled.div<FlexProps>`
-    display: flex;
-
     align-items: ${({align}) => align || 'flex-start'};
     flex-direction: ${({column}) => (column ? 'column' : 'row')};
+    display: ${({visible}) => (visible === false ? 'none' : 'flex')};
     flex-wrap: ${({wrap}) => wrap || 'wrap'};
     justify-content: ${({justify}) => justify || 'space-between'};
     width: ${({width}) => width};

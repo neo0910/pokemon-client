@@ -2,8 +2,7 @@ import {createApi} from '@reduxjs/toolkit/query/react';
 
 import {AuthResponseT} from '../models/response';
 import {baseQueryWithReauth} from '../api';
-import {setIsAuth, setUser} from '../store/authSlice';
-import {UserT} from '../models/User';
+import {setCurrentUser} from '../store/authSlice';
 
 export const authApi = createApi({
     reducerPath: 'authApi',
@@ -18,8 +17,7 @@ export const authApi = createApi({
 
                 if (data) {
                     localStorage.setItem('token', data.accessToken);
-                    dispatch(setIsAuth(true));
-                    dispatch(setUser(data.user));
+                    dispatch(setCurrentUser(data.user));
                 }
             },
         }),
@@ -32,8 +30,7 @@ export const authApi = createApi({
 
                 if (data) {
                     localStorage.setItem('token', data.accessToken);
-                    dispatch(setIsAuth(true));
-                    dispatch(setUser(data.user));
+                    dispatch(setCurrentUser(data.user));
                 }
             },
         }),
@@ -43,8 +40,7 @@ export const authApi = createApi({
                 await cacheDataLoaded;
 
                 localStorage.removeItem('token');
-                dispatch(setIsAuth(false));
-                dispatch(setUser({} as UserT));
+                dispatch(setCurrentUser(null));
             },
         }),
         checkAuth: builder.query<AuthResponseT, void>({
@@ -56,8 +52,7 @@ export const authApi = createApi({
 
                 if (data) {
                     localStorage.setItem('token', data.accessToken);
-                    dispatch(setIsAuth(true));
-                    dispatch(setUser(data.user));
+                    dispatch(setCurrentUser(data.user));
                 }
             },
         }),

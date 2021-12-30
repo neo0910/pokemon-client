@@ -1,8 +1,7 @@
 import {BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError} from '@reduxjs/toolkit/query/react';
 
 import {AuthResponseT} from '../models/response';
-import {UserT} from '../models/User';
-import {setIsAuth, setUser} from '../store/authSlice';
+import {setCurrentUser} from '../store/authSlice';
 
 export const API_URL = 'http://localhost:3005/api';
 
@@ -37,10 +36,8 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
             result = await basePrivateQuery(args, api, extraOptions);
         } else {
             // case when refreshToken is dead
-            await basePrivateQuery('/auth/logout', api, extraOptions);
             localStorage.removeItem('token');
-            api.dispatch(setIsAuth(false));
-            api.dispatch(setUser({} as UserT));
+            api.dispatch(setCurrentUser(null));
         }
     }
 
