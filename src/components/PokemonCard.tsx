@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import {Flex} from '../ui/StyledFlex';
 import {PokemonT} from '../models/Pokemon';
+import {StyledLink} from '../ui/StyledLink';
 import {TypeT} from '../models/Type';
 
 const PokemonCardWrapper = styled.div`
@@ -54,9 +55,9 @@ const pokemonTypeColors = (t: TypeT) => {
     }
 };
 
-const PokemonCard: FC<{pokemon: PokemonT}> = ({pokemon}) => {
-    return (
-        <PokemonCardWrapper>
+const PokemonCard: FC<{pokemon: PokemonT}> = ({pokemon}) => (
+    <PokemonCardWrapper>
+        <StyledLink to={pokemon.id.toString()}>
             <figure>
                 <img
                     alt={pokemon.name}
@@ -65,19 +66,19 @@ const PokemonCard: FC<{pokemon: PokemonT}> = ({pokemon}) => {
                 />
                 <figcaption>{`${pokemon.number}. ${pokemon.name}`}</figcaption>
             </figure>
-            <PokemonCardDescription>
-                <span>Height: {pokemon.height} m</span>
-                <span>Weight: {pokemon.weight} kg</span>
-            </PokemonCardDescription>
-            <Flex justify="center">
-                {pokemon.type.map((t) => (
-                    <PokemonType key={t.id} {...pokemonTypeColors(t)}>
-                        {t.name}
-                    </PokemonType>
-                ))}
-            </Flex>
-        </PokemonCardWrapper>
-    );
-};
+        </StyledLink>
+        <PokemonCardDescription>
+            <span>Height: {pokemon.height} m</span>
+            <span>Weight: {pokemon.weight} kg</span>
+        </PokemonCardDescription>
+        <Flex justify="center">
+            {pokemon.type.map((t) => (
+                <PokemonType key={t.id} {...pokemonTypeColors(t)}>
+                    {t.name}
+                </PokemonType>
+            ))}
+        </Flex>
+    </PokemonCardWrapper>
+);
 
 export default memo(PokemonCard);

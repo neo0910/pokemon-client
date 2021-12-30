@@ -8,6 +8,7 @@ import App from './App';
 import GlobalStyle from './ui/globalStyle';
 import Login from './pages/login';
 import Pokedex from './pages/pokedex';
+import Pokemon from './pages/pokemon';
 import PrivateRoute from './components/PrivateRoute';
 import Registration from './pages/registration';
 
@@ -35,6 +36,15 @@ ReactDOM.render(
                             element={
                                 <PrivateRoute>
                                     <Pokedex />
+                                </PrivateRoute>
+                            }
+                        />
+
+                        <Route
+                            path="pokedex/:id"
+                            element={
+                                <PrivateRoute>
+                                    <Pokemon />
                                 </PrivateRoute>
                             }
                         />

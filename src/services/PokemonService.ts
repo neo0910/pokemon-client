@@ -12,6 +12,10 @@ export const pokemonApi = createApi({
             query: () => '/pokemons',
             providesTags: ['Pokemon'],
         }),
+        fetchPokemonById: builder.query<PokemonT[], string>({
+            query: (id) => `/pokemons/${id}`,
+            providesTags: ['Pokemon'],
+        }),
         createPokemon: builder.mutation<PokemonT, PokemonDto>({
             query: (pokemon) => ({
                 url: '/pokemons',
