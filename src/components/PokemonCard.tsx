@@ -72,7 +72,7 @@ const PokemonCard: FC<{pokemon: PokemonT}> = ({pokemon}) => (
             <span>Weight: {pokemon.weight} kg</span>
         </PokemonCardDescription>
         <Flex justify="center">
-            {pokemon.type.map((t) => (
+            {pokemon.types.map((t) => (
                 <PokemonType key={t.id} {...pokemonTypeColors(t)}>
                     {t.name}
                 </PokemonType>

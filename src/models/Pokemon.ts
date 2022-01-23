@@ -6,7 +6,7 @@ export type PokemonT = {
     readonly id: number;
     readonly name: string;
     readonly number: number;
-    readonly type: TypeT[];
+    readonly types: TypeT[];
     readonly weight: number;
 };
 
@@ -15,6 +15,6 @@ export type PokemonDto = {
     readonly height: number;
     readonly name: string;
     readonly number: number;
-    readonly type_id: Array<number | string>;
+    readonly type_ids: Array<number | string>;
     readonly weight: number;
 };

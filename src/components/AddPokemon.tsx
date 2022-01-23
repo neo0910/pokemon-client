@@ -34,7 +34,7 @@ const AddPokemon: FC = () => {
                             height: 0,
                             name: '',
                             number: 0,
-                            type_id: types ? [types[0]?.id.toString()] : [],
+                            type_ids: types ? [types[0]?.id.toString()] : [],
                             weight: 0,
                         } as PokemonDto
                     }
@@ -78,10 +78,10 @@ const AddPokemon: FC = () => {
                                     type="number"
                                 />
 
-                                <FieldArray name="type_id">
+                                <FieldArray name="type_ids">
                                     {({insert, remove, push}) => (
                                         <Flex column width="100%">
-                                            {values.type_id.map((type, i) => (
+                                            {values.type_ids.map((type, i) => (
                                                 <Flex key={i} column width="100%">
                                                     {i === 0 && (
                                                         <label htmlFor="type" style={{fontWeight: 600}}>
@@ -91,7 +91,7 @@ const AddPokemon: FC = () => {
                                                     <Flex width="100%">
                                                         <Field
                                                             as="select"
-                                                            name={`type_id[${i}]`}
+                                                            name={`type_ids[${i}]`}
                                                             style={{height: 32, width: '100%', flexGrow: 1}}
                                                         >
                                                             {(types || []).map((t) => (
@@ -104,7 +104,7 @@ const AddPokemon: FC = () => {
                                                             outline
                                                             onClick={() => remove(i)}
                                                             type="button"
-                                                            visible={values.type_id.length > 1}
+                                                            visible={values.type_ids.length > 1}
                                                         >
                                                             X
                                                         </Button>

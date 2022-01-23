@@ -20,7 +20,7 @@ export const pokemonApi = createApi({
             query: (pokemon) => ({
                 url: '/pokemons',
                 method: 'POST',
-                body: {...pokemon, type_id: pokemon.type_id.map((type) => parseInt(type as string, 10))},
+                body: {...pokemon, type_ids: pokemon.type_ids.map((type) => parseInt(type as string, 10))},
             }),
             invalidatesTags: ['Pokemon'],
         }),
