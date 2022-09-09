@@ -1,0 +1,10 @@
+1. Requests with the same URLs and params are cached (The default expiration is 60 seconds, which can be configured both for the API definition as a whole, as well as on a per-endpoint basis).
+2. isLoading is true only the 1st time, isFetchig is true each time of fetching
+3. Hard revalidate the cached request.
+4. Each hook has it's own state, but cache is common.
+5. Tags for invalidation of the cached requests. Tags are smart, because they are update only actual requests (current/last).
+6. Uses fetch under the hood and has a short list of deps.
+7. Conditional fetching
+8. onQueryStarted/onCacheEntryAdded has dispatch and getState() (https://redux-toolkit.js.org/rtk-query/usage/queries#defining-query-endpoints)
+9. Lazy queries
+10. options.selectFromResults - it's a selector like for state (render-optimized), and we can avoid fetching by id (selector can take item by id from cache)

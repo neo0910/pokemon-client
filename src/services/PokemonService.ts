@@ -8,8 +8,8 @@ export const pokemonApi = createApi({
     baseQuery: baseQueryWithReauth,
     tagTypes: ['Pokemon'],
     endpoints: (builder) => ({
-        fetchPokemons: builder.query<PokemonT[], void>({
-            query: () => '/pokemons',
+        fetchPokemons: builder.query<PokemonT[], number>({
+            query: (limit) => `/pokemons?limit=${limit}`,
             providesTags: ['Pokemon'],
         }),
         fetchPokemonById: builder.query<PokemonT[], string>({
@@ -22,6 +22,7 @@ export const pokemonApi = createApi({
                 method: 'POST',
                 body: {...pokemon, type_ids: pokemon.type_ids.map((type) => parseInt(type as string, 10))},
             }),
+            // (5)
             invalidatesTags: ['Pokemon'],
         }),
     }),

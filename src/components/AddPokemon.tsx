@@ -12,7 +12,7 @@ import Modal from './Modal';
 
 const AddPokemon: FC = () => {
     const {data: types} = typeApi.useFetchTypesQuery();
-    const [createPokemon] = pokemonApi.useCreatePokemonMutation();
+    const [createPokemon, {isLoading, error}] = pokemonApi.useCreatePokemonMutation();
 
     const [visible, setVisible] = useState(false);
 
